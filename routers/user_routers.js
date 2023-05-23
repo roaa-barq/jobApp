@@ -5,8 +5,15 @@ const multer = require("multer");
 const storage = multer.memoryStorage(); //for pdf resume
 const upload = multer({ storage });
 
+
+
+
+
 //CRUD OPS on jobs
 router.post("/addJob", UserController.addJob); //~~~~~~~create
+/**
+ * { "jobTitle": "security engineer", "description":"desc", "requirements":["req1","req2"], "location":"new york", "salary":200000 }
+ */
 router.get('/jobs/:id', UserController.getJobById); //~~~~~~~~retrieve 
 router.put('/jobs/:id',UserController.updateJobOfId );//~~~~~update 
 router.delete('/jobs/:id',UserController.deleteJob); // ~~~~delete  

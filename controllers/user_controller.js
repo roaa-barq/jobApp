@@ -34,13 +34,13 @@ exports.getJobById = async (req, res) => {
 };
 exports.updateJobOfId = async (req, res) => {
   try {
-    console.log("dwdwed");
+   // console.log("dwdwed");
     const job = await UserServices.updateJobOfId(req);
     if (!job) {
       return res.status(404).json({ error: "this job does not exists " });
     }
     res.json(job);
-    console.log("resss");
+  //  console.log("resss");
   } catch (error) {
     res.status(500).json({ error: "sommething went wrong!!" });
   }
@@ -175,13 +175,13 @@ exports.getApplicationById = async (req, res) => {
 };
 exports.updateApplicationOfId = async (req, res) => {
   try {
-    console.log("dwdwed");
+    //console.log("dwdwed");
     const job = await UserServices.updateApplicationOfId(req);
     if (!job) {
       return res.status(404).json({ error: "this job does not exists " });
     }
     res.json(job);
-    console.log("resss");
+ //   console.log("resss");
   } catch (error) {
     res.status(500).json({ error: "sommething went wrong!!" });
   }
