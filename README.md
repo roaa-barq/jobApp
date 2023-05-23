@@ -21,6 +21,14 @@ In controllers, We have function that handle request & response.<br />
 In services, all the database operation happens like fetching, Insertion, Deletion.<br />
   
 ___________________________________________________________________________________________________________________________________<br />
+* Login and Register API's:
+* register:
+* ![image](https://github.com/roaa-barq/jobApp/assets/93089580/36fa44e8-208a-490d-b8e3-c37ca13610d1)
+* login:
+![image](https://github.com/roaa-barq/jobApp/assets/93089580/195e0510-a17e-40ad-9323-1ea9b9201b8d)
+
+
+
 1- CRUD Operations: The API must implement basic CRUD operations on the database to enable the creation, retrieval, update, and deletion of job listings, and job applications.<br />
 
 * CRUD on jobs:<br />
