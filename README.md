@@ -8,6 +8,7 @@ Roaa Barq , Masa Abu Odeh and Masa Masri.
   2-"express".<br />
   3-"mongoose".<br />
   3-"multer".<br />
+  4-"bcrypt".<br />
   ____________________<br />
 * Models:.<br />
   Application Model.<br />
