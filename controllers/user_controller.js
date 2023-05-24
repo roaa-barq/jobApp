@@ -2,10 +2,26 @@ const UserServices = require("../services/user_services");
 const JobModel = require("../models/job_model");
 const ApplicationModel = require("../models/application_model");
 const router = require("../routers/user_routers");
+const EmployerModel = require("../models/employer_model");
+const ApplierModel = require("../models/applier_model");
+const jwt = require("jsonwebtoken");
+
 exports.addJob = async (req, res, next) => {
   try {
     console.log("---req body---", req.body);
-    const { jobTitle, description, requirements, location, salary } = req.body;
+    const { userId, jobTitle, description, requirements, location, salary } = req.body;
+
+    const employer = await EmployerModel.findById(mongoose.Types.ObjectId(userId));
+    if (!employer) {
+      return res.status(403).json({ status: false, error: "Invalid userId. User is not an employer." });
+    }
+
+    const token = req.headers.authorization;
+    const decodedToken = jwt.verify(token, "your-secret-key");
+
+    if (employer.id !== decodedToken.userId) {
+      return res.status(403).json({ status: false, error: "You are not authorized to add a job." });
+    }
 
     const response = await UserServices.addJob(
       jobTitle,
@@ -15,12 +31,13 @@ exports.addJob = async (req, res, next) => {
       salary
     );
 
-    res.json({ status: true, success: "job added successfully" });
+    res.json({ status: true, success: "Job added successfully." });
   } catch (err) {
     console.log("---> err -->", err);
     next(err);
   }
 };
+
 exports.getJobById = async (req, res) => {
   try {
     const job = await UserServices.getJobById(req.params.id);
@@ -32,36 +49,63 @@ exports.getJobById = async (req, res) => {
     res.status(500).json({ error: "sommething went wrong!!" });
   }
 };
+
+
 exports.updateJobOfId = async (req, res) => {
   try {
-   // console.log("dwdwed");
-    const job = await UserServices.updateJobOfId(req);
+    const job = await UserServices.getJobById(req.params.jobId);
     if (!job) {
-      return res.status(404).json({ error: "this job does not exists " });
+      return res.status(404).json({ error: "This job does not exist." });
     }
-    res.json(job);
-  //  console.log("resss");
+    const token = req.headers.authorization;
+    const decodedToken = jwt.verify(token, "your-secret-key");
+
+    // Check if the logged-in user is the same as the employer who created the job
+    if (job.userId.toString() !== decodedToken.userId) {
+      return res.status(403).json({ error: "You are not authorized to update this job." });
+    }
+
+    const updatedJob = await UserServices.updateJobOfId(req);
+
+    res.json(updatedJob);
   } catch (error) {
-    res.status(500).json({ error: "sommething went wrong!!" });
+    res.status(500).json({ error: "Something went wrong." });
   }
 };
+
 exports.deleteJob = async (req, res) => {
   try {
-    const job = await UserServices.deleteJob(req);
+    const job = await UserServices.getJobById(req.params.jobId);
     if (!job) {
-      return res.status(404).json({ error: "this job does not exists" });
+      return res.status(404).json({ error: "This job does not exist." });
     }
-    res.json({ message: "Job deleted successfully" });
+    const token = req.headers.authorization;
+    const decodedToken = jwt.verify(token, "your-secret-key");
+
+    // Check if the logged-in user is the same as the employer who created the job
+    if (job.userId.toString() !== decodedToken.userId) {
+      return res.status(403).json({ error: "You are not authorized to delete this job." });
+    }
+
+    await UserServices.deleteJob(req);
+
+    res.json({ message: "Job deleted successfully." });
   } catch (error) {
-    res.status(500).json({ error: "something went  wrong" });
+    res.status(500).json({ error: "Something went wrong." });
   }
 };
+
 exports.addSavedJob = async (req, res, next) => {
   try {
     console.log("---req body---", req.body);
-    const { jobId } = req.body;
+    const { jobId,userId } = req.body;
+    const applier = await ApplierModel.findById(userId);
+    if (!applier) {
+      return res.status(403).json({ status: false, error: "Invalid userId. User is not an employer." });
+    }
+    
 
-    const response = await UserServices.addSavedJob(jobId);
+    const response = await UserServices.addSavedJob(jobId,userId);
 
     res.json({ status: true, success: "job added successfully" });
   } catch (err) {
@@ -118,10 +162,11 @@ exports.getSavedJobs = async (req, res) => {
 
 exports.addApplication = async (req, res) => {
   try {
-    const { jobId, name, email, phone, coverLetter } = req.body;
+    const { jobId, name, email, phone, coverLetter,userId } = req.body;
     const resume = req.file.buffer; // Access the file buffer
 
     const newApplication = new ApplicationModel({
+      userId,
       jobId,
       name,
       email,

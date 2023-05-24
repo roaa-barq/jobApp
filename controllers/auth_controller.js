@@ -33,6 +33,9 @@ exports.login = async (req, res, next) => {
         }
 
         const isPasswordCorrect = await user.comparePassword(password);
+        let tokenData;
+        tokenData = { _id: user._id, email: user.email };
+        const token = await AuthServices.generateAccessToken(tokenData,"secret","1h")
 
         if (isPasswordCorrect === false) {
             throw new Error(`Username or Password does not match`);
@@ -41,7 +44,7 @@ exports.login = async (req, res, next) => {
         // Creating Token
 
 
-        res.status(200).json({ status: true, success: "sendData" });
+        res.status(200).json({ status: true, success: "sendData" , token: token});
     } catch (error) {
         console.log(error, 'err---->');
         next(error);

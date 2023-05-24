@@ -10,7 +10,7 @@ const upload = multer({ storage });
 
 
 //CRUD OPS on jobs
-router.post("/addJob", UserController.addJob); //~~~~~~~create
+router.post("/jobs", UserController.addJob); //~~~~~~~create
 /**
  * { "jobTitle": "security engineer", "description":"desc", "requirements":["req1","req2"], "location":"new york", "salary":200000 }
  */
@@ -24,9 +24,9 @@ router.get('/jobs',UserController.getJobs);   //get jobs./ search and  ex: jobs?
 router.get('/getSavedJobs',UserController.getSavedJobs);  //
 
 router.post("/apply", upload.single("resume"), UserController.addApplication); ///aply for a job (post) --create
-router.get("/applicaions/:id", UserController.getApplicationById); //~~~~~~~~retrieve
-router.put("/applicaions/:id", UserController.updateApplicationOfId); //~~~~~update
-router.delete("/applicaions/:id", UserController.deleteApplication); // ~~~~delete
+router.get("/applications/:id", UserController.getApplicationById); //~~~~~~~~retrieve
+router.put("/applications/:id", UserController.updateApplicationOfId); //~~~~~update
+router.delete("/applications/:id", UserController.deleteApplication); // ~~~~delete
 
 
 router.get("/applications", UserController.getAllApplications); ///get applications

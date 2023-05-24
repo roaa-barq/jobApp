@@ -19,11 +19,11 @@ class UserServices {
       throw err;
     }
   }
-  static async addSavedJob(jobId) {
+  static async addSavedJob(jobId,userId) {
     try {
       //console.log("-----job name-----",jobName);
 
-      const createJob = new SavedJobModel({ jobId });
+      const createJob = new SavedJobModel({ userId,jobId });
       return await createJob.save();
     } catch (err) {
       throw err;
